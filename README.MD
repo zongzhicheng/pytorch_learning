@@ -7,3 +7,5 @@ https://github.com/pytorch/vision#installation
 #### Pytorch手动下载
 https://download.pytorch.org/whl/torch_stable.html
 
+#### 其他安装包
+    pip install -r requirements.txt
