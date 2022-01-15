@@ -2,6 +2,7 @@
 """
 @Author:   Zongzc
 @Describe: 使用 Tensor 及 Autograd 实现机器学习
+           本例子是拟合二次函数
 """
 import torch as t
 from matplotlib import pyplot as plt
@@ -48,4 +49,4 @@ plt.ylim(2, 6)
 plt.legend()
 plt.show()
 
-print(w, b)
+print(loss, w, b)
