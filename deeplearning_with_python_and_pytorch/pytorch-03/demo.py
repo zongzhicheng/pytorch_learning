@@ -80,17 +80,17 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False)
 
     # 可视化源数据
-    examples = enumerate(test_loader)
-    batch_idx, (example_data, example_targets) = next(examples)
-    fig = plt.figure()
-    for i in range(6):
-        plt.subplot(2, 3, i + 1)
-        plt.tight_layout()
-        plt.imshow(example_data[i][0], cmap='gray', interpolation='none')
-        plt.title("Ground Truth: {}".format(example_targets[i]))
-        plt.xticks([])
-        plt.yticks([])
-    plt.show()
+    # examples = enumerate(test_loader)
+    # batch_idx, (example_data, example_targets) = next(examples)
+    # fig = plt.figure()
+    # for i in range(6):
+    #     plt.subplot(2, 3, i + 1)
+    #     plt.tight_layout()
+    #     plt.imshow(example_data[i][0], cmap='gray', interpolation='none')
+    #     plt.title("Ground Truth: {}".format(example_targets[i]))
+    #     plt.xticks([])
+    #     plt.yticks([])
+    # plt.show()
 
     # 检测是否有可用的GPU，有则使用，否则使用CPU
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     eval_acces = []
     writer = SummaryWriter(log_dir='logs', comment='train-loss')
 
-    for epoch in range(2):
+    for epoch in range(num_epoches):
         train_loss = 0
         train_acc = 0
         model.train()
