@@ -9,11 +9,12 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import os
+from loguru import logger
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 # 定义一些超参数
-EPOCHES = 20
+EPOCHES = 40
 LR = 0.001
 cfg = {
     'VGG16': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
@@ -53,7 +54,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 # Data
-print('==> Preparing data..')
+logger.info("Preparing data..")
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
@@ -68,7 +69,7 @@ transform_test = transforms.Compose([
 
 # 在笔记本上跑的 别的机器上batch_size可以放大
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=False, transform=transform_train)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True, num_workers=0)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=50, shuffle=True, num_workers=0)
 
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=False, transform=transform_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=50, shuffle=False, num_workers=0)
@@ -76,22 +77,21 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=50, shuffle=False, 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # Model
-print('==> Building model..')
+logger.info("Building model..")
 net = VGG('VGG16').to(device)
 # 交叉熵损失函数
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=LR)
 loss_function = nn.CrossEntropyLoss()
 
-print('==> Begin train..')
+logger.info("Begin train..")
+
 for epoch in range(EPOCHES):
 
-    running_loss = 0.0
     for img, label in trainloader:
         img, label = img.to(device), label.to(device)
         # 权重参数梯度清零
         optimizer.zero_grad()
-        net.train()
         # 正向及反向传播
         out = net(img)
         loss = criterion(out, label)
@@ -99,14 +99,15 @@ for epoch in range(EPOCHES):
         optimizer.step()
 
     correct = 0
+    total = 0
     for img, label in testloader:
         img, label = img.to(device), label.to(device)
-        net.eval()
         out = net(img)
         _, prediction = torch.max(out, 1)  # 按行取最大值
         pre_num = prediction.cpu().numpy()
+        total += label.size(0)
         correct += (pre_num == label.cpu().numpy()).sum()
 
-    print("VGG16模型迭代" + str(epoch) + "次的正确率为：" + str(correct / len(testloader)))
+    logger.debug(f"VGG16模型迭代{str(epoch + 1)}次的正确率为：{str(100 * correct / total)}%")
 
-print('==> Finish train')
+logger.info("Finish train..")
