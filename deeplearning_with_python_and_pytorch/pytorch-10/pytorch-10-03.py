@@ -70,10 +70,6 @@ if __name__ == '__main__':
         cl_image(image)
         print(image, "done!")
 
-    img = imread('./clean_photo/test_images/shanghai02.jpg')
-    plt.imshow(img)
-    plt.show()
-
     img = imread('clean_photo/results/shanghai02.jpg')
     plt.imshow(img)
     plt.show()
