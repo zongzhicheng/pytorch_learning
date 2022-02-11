@@ -10,6 +10,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import os
 from loguru import logger
+import torch.nn.functional as F
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
@@ -32,6 +33,7 @@ class VGG(nn.Module):
         out = self.features(x)
         out = out.view(out.size(0), -1)
         out = self.classifier(out)
+
         return out
 
     def _make_layers(self, cfg):
@@ -81,7 +83,8 @@ logger.info("Building model..")
 net = VGG('VGG16').to(device)
 # 交叉熵损失函数
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(net.parameters(), lr=LR)
+optimizer = torch.optim.SGD(net.parameters(), lr=LR, momentum=0.9)
+# optimizer = torch.optim.Adam(net.parameters(), lr=LR)
 loss_function = nn.CrossEntropyLoss()
 
 logger.info("Begin train..")
