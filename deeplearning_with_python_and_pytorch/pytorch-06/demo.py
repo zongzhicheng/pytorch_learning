@@ -80,7 +80,7 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 
 # Model
 logger.info("Building model..")
-net = VGG('VGG16').to(device)
+net = VGG('VGG19').to(device)
 # 交叉熵损失函数
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(net.parameters(), lr=LR, momentum=0.9)
@@ -111,6 +111,6 @@ for epoch in range(EPOCHES):
         total += label.size(0)
         correct += (pre_num == label.cpu().numpy()).sum()
 
-    logger.debug(f"VGG16模型迭代{str(epoch + 1)}次的正确率为：{str(100 * correct / total)}%")
+    logger.debug(f"VGG19模型迭代{str(epoch + 1)}次的正确率为：{str(100 * correct / total)}%")
 
 logger.info("Finish train..")
