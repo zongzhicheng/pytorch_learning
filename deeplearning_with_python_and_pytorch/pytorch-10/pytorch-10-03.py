@@ -50,26 +50,26 @@ def cl_image(image_path):
     data = data.permute(2, 0, 1)
     data = data.to(device).unsqueeze(0)
 
-    net.load_state_dict(torch.load('clean_photo/dehazer.pth'))
+    net.load_state_dict(torch.load('data/clean_photo/dehazer.pth'))
 
     clean_image = net.forward(data)
     torchvision.utils.save_image(torch.cat((data, clean_image), 0),
-                                 "clean_photo/results/" + image_path.split("\\")[-1])
+                                 "data/clean_photo/results/" + image_path.split("\\")[-1])
 
 
 if __name__ == '__main__':
     # 创建存放目标文件目录
-    path = 'clean_photo/results'
+    path = 'data/clean_photo/results'
     if not os.path.exists(path):
         os.makedirs(path)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     net = Model().to(device)
     print(os.getcwd())
-    test_list = glob.glob(os.getcwd() + r"\clean_photo\test_images\*")
+    test_list = glob.glob(os.getcwd() + r"\data\clean_photo\test_images\*")
     for image in test_list:
         cl_image(image)
         print(image, "done!")
 
-    img = imread('clean_photo/results/shanghai02.jpg')
+    img = imread('data/clean_photo/results/shanghai02.jpg')
     plt.imshow(img)
     plt.show()
