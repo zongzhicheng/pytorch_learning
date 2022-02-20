@@ -87,8 +87,13 @@ optimizer = torch.optim.SGD(net.parameters(), lr=LR, momentum=0.9)
 # optimizer = torch.optim.Adam(net.parameters(), lr=LR)
 loss_function = nn.CrossEntropyLoss()
 
-logger.info("Begin train..")
+total_params = sum(p.numel() for p in net.parameters())
+logger.info('总参数个数:{}'.format(total_params))
+total_trainable_params = sum(p.numel() for p in net.parameters() if p.requires_grad)
+logger.info('需训练参数个数:{}'.format(total_trainable_params))
 
+
+logger.info("Begin train..")
 for epoch in range(EPOCHES):
 
     for img, label in trainloader:
@@ -112,5 +117,4 @@ for epoch in range(EPOCHES):
         correct += (pre_num == label.cpu().numpy()).sum()
 
     logger.debug(f"VGG19模型迭代{str(epoch + 1)}次的正确率为：{str(100 * correct / total)}%")
-
 logger.info("Finish train..")
